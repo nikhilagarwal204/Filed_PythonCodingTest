@@ -53,11 +53,13 @@ def payment_result():
     }
     print(details)
 
+
+    validccnumlen = 10   # to declare the length of valid credit number
     # CreditCardNumber (mandatory, string, it should be a valid credit card number)
     # ExpirationDate (mandatory, DateTime, it cannot be in the past)
     # Checking the above Criteria otherwise Request Invalid
-    if (len(ccnum)!=1) or (expdate < datetime.datetime.today()):
-        payment_mode = 'Payment Not Processed'
+    if (len(ccnum)!=validccnumlen) or (expdate < datetime.datetime.today()):
+        # print('Payment Not Processed')
         return "The request is invalid: 400 bad request", status.HTTP_400_BAD_REQUEST
 
     # The payment gateway that should be used to process each payment follows the next set of business rules
@@ -65,7 +67,7 @@ def payment_result():
     # Else it will show Internal server error with 500 status code
     if (amount>=0 and amount<=20):
         success_status = PayGatewaysSimulation.CheapPaymentGateway(details)
-        print(success_status)
+        # print(success_status)
         if(success_status==1):
             payment_mode = 'CheapPaymentGateway'
         else:
@@ -73,12 +75,12 @@ def payment_result():
 
     elif (amount>=21 and amount<=500):
         success_status = PayGatewaysSimulation.ExpensivePaymentGateway(details)
-        print(success_status)
+        # print(success_status)
         if(success_status==1):
             payment_mode = 'ExpensivePaymentGateway'
         else:
             success_status = PayGatewaysSimulation.CheapPaymentGateway(details)
-            print(success_status)
+            # print(success_status)
             if(success_status==1):
                 payment_mode = 'CheapPaymentGateway'
             else:
@@ -88,7 +90,7 @@ def payment_result():
         flag = False
         for count in range(1,4):
             success_status = PayGatewaysSimulation.PremiumPaymentGateway(details)
-            print(success_status)
+            # print(success_status)
             if(success_status==1):
                 payment_mode = 'PremiumPaymentGateway'
                 flag = True
@@ -97,7 +99,7 @@ def payment_result():
             return "500 internal server error", status.HTTP_500_INTERNAL_SERVER_ERROR
 
     else:
-        return "500 internal server error", status.HTTP_500_INTERNAL_SERVER_ERROR
+        return "The request is invalid: 400 bad request", status.HTTP_400_BAD_REQUEST
 
     # If Payment is Successful, payment gateway will be shown in new HTML page
     return render_template("result.html", payment_mode = payment_mode), status.HTTP_200_OK
