@@ -21,7 +21,7 @@ def upload_details():
             <h2>Enter CreditCardNumber</h2>
                 <input type="text" name="ccnum" required/>
             <h2>Enter CardHolder</h2>
-                <input type="text" name="holder" pattern="[A-Za-z]+" title="Enter Name" required/>
+                <input type="text" name="holder" pattern="[A-Za-z ]+" title="Enter Name" required/>
             <h2>Enter ExpirationDate</h2>
                 <input type="date" name="expdate" required/>
             <h2>Enter SecurityCode</h2>
@@ -51,7 +51,7 @@ def payment_result():
         'SecurityCode':sec_code,
         'Amount':amount,
     }
-    print(details)
+    # print(details)
 
 
     validccnumlen = 10   # to declare the length of valid credit number
